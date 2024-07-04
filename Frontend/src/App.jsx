@@ -13,27 +13,30 @@ function App() {
 
   const getPosts = async () => {
     const { data: posts } = await axios.get(urlBaseServer + "/posts");
-    console.log ("aca..data post:",posts)
     setPosts([...posts]);
   };
 
   const agregarPost = async () => {
     const post = { titulo, img: imgSrc, descripcion };
     console.log("aca post..:",post)
-    await axios.post(urlBaseServer + "/posts", post);
+    await axios.post(urlBaseServer + "/post", post);
     getPosts();
   };
 
-  // este método se utilizará en el siguiente desafío
-  const like = async (id) => {
-    await axios.put(urlBaseServer + `/posts/like/${id}`);
-    getPosts();
+  const like = async (id, newLikes) => {
+    const updatedPosts = posts.map(post => 
+      post.id === id ? { ...post, likes: newLikes } : post
+    );
+    setPosts(updatedPosts);
   };
 
-  // este método se utilizará en el siguiente desafío
   const eliminarPost = async (id) => {
-    await axios.delete(urlBaseServer + `/posts/${id}`);
-    getPosts();
+    try {
+      await axios.delete(urlBaseServer + `/posts/${id}`);
+      setPosts(posts.filter(post => post.id !== id));
+    } catch (error) {
+      console.error('Error al eliminar el post:', error);
+    }
   };
 
   useEffect(() => {
@@ -57,8 +60,13 @@ function App() {
             <Post
               key={i}
               post={post}
-              like={like}
-              eliminarPost={eliminarPost}
+              onPostUpdated={(id, likes) => {
+                const updatedPosts = posts.map(p => 
+                  p.id === id ? { ...p, likes } : p
+                );
+                setPosts(updatedPosts);
+              }}
+              onPostDeleted={eliminarPost}
             />
           ))}
         </div>
@@ -66,5 +74,7 @@ function App() {
     </div>
   );
 }
+
+
 
 export default App;

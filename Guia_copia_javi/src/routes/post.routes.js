@@ -1,11 +1,12 @@
 import {Router} from 'express';
-import { createPost, getAllPost } from '../controllers/post.controller.js';
+import { createPost, getAllPost, updatePeliculas,deletePost } from '../controllers/post.controller.js';
 
 const router = Router();
 
-router.get ('/', getAllPost);
 router.get('/posts', getAllPost);
-router.post('/posts', createPost);
+router.post('/post', createPost);
+router.put('/like/:id', updatePeliculas);
+router.delete('/posts/:id', deletePost); // Asegúrate de que esta línea esté correcta
 
 export default router;
 

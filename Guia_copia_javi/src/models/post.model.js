@@ -34,4 +34,27 @@ export const createPostModel = async ({ titulo, img, descripcion, likes }) => {
     }
 };
 
+export const updatePeliculasModel = async(id,  likes ) => {
+    const result = await pool.query('UPDATE posts SET  likes=$1  WHERE id=$2 RETURNING *',
+        [ likes, id]
+        
+    ); 
+  
+        return result.rows[0];
+
+}
+
+// Delete a post
+export const deletePostModel = async (id) => {
+    const SQLquery = {
+        text: 'DELETE FROM posts WHERE id = $1',
+        values: [id],
+    };
+    try {
+        await pool.query(SQLquery);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 // Modelo > Controlle > router = MVC
